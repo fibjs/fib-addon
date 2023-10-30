@@ -13,7 +13,7 @@ include_directories(
     "${CMAKE_CURRENT_BINARY_DIR}")
 
 if(MSVC)
-    target_link_libraries(${name} "${PROJECT_SOURCE_DIR}/fib-addon/lib/node_${ARCH}.lib")
+    target_link_libraries(${name} "${PROJECT_SOURCE_DIR}/fib-addon/lib/node_${BUILD_ARCH}.lib")
     set(link_flags "${link_flags} /DELAYLOAD:node.exe")
 else()
     set(link_flags "${link_flags} -Wl,-undefined,dynamic_lookup")
