@@ -10,6 +10,7 @@ add_library(${name} SHARED ${src_list} ${addons_list})
 include_directories(
     "${PROJECT_SOURCE_DIR}/include"
     "${PROJECT_SOURCE_DIR}/fib-addon/include"
+    "${PROJECT_SOURCE_DIR}/fib-addon/node-addon-api"
     "${CMAKE_CURRENT_BINARY_DIR}")
 
 if(MSVC)

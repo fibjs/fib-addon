@@ -1,3 +1,6 @@
 [submodule "build_tools"]
 	path = build_tools
 	url = https://github.com/fibjs/build_tools.git
+[submodule "node-addon-api"]
+	path = node-addon-api
+	url = https://github.com/nodejs/node-addon-api.git
