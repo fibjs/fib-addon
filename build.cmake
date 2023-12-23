@@ -9,6 +9,8 @@ build("${CMAKE_CURRENT_SOURCE_DIR}" "${WORK_ROOT}" "${name}")
 
 set(BIN_PATH "${WORK_ROOT}/bin/${DIST_DIRNAME}")
 
+file(COPY ${BIN_PATH}/${name}.node DESTINATION ${WORK_ROOT}/addon)
+
 message("")
 if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux")
     message("==== GLIBC ====")
