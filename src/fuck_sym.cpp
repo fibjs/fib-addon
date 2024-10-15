@@ -11,6 +11,10 @@
 
 extern "C" {
 
+#ifndef __THROW
+#define __THROW
+#endif
+
 // GLIBC_2.14
 #ifdef GLIB_C_MEMCPY
 __asm__(".symver _memcpy,memcpy@GLIBC_" GLIB_C_MEMCPY);
