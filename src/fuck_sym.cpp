@@ -45,7 +45,7 @@ int __cxa_thread_atexit_impl(void (*dtor)(void*), void* obj, void* dso_symbol)
 }
 
 // GLIBC_2.25
-void explicit_bzero(void* s, size_t n)
+void explicit_bzero(void* s, size_t n) __THROW
 {
     memset(s, 0, n);
 }
