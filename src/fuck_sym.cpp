@@ -38,6 +38,18 @@ int clock_getres(clockid_t clk_id, struct timespec* tp)
 }
 #endif
 
+// GLIBC_2.18
+int __cxa_thread_atexit_impl(void (*dtor)(void*), void* obj, void* dso_symbol)
+{
+    return 0;
+}
+
+// GLIBC_2.25
+void explicit_bzero(void* s, size_t n)
+{
+    memset(s, 0, n);
+}
+
 // GLIBC_2.28
 #ifdef GLIB_C_FCNTL
 __asm__(".symver _fcntl,fcntl@GLIBC_" GLIB_C_FCNTL);
