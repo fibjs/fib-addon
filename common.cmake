@@ -13,6 +13,15 @@ get_filename_component(name ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 include(${CMAKE_CURRENT_LIST_DIR}/build_tools/cmake/option.cmake)
 
+# node-addon-api is a C++17 library: napi.h includes <string_view> and uses
+# std::string_view unconditionally (MSVC compiles as C++14 by default, where
+# <string_view> exists but std::string_view does not).  A repository that states
+# an older standard is lifted here; an unset one keeps the default of
+# build_tools (C++20).
+if(NOT "${CMAKE_CXX_STANDARD}" STREQUAL "" AND CMAKE_CXX_STANDARD LESS 17)
+    set(CMAKE_CXX_STANDARD 17)
+endif()
+
 file(GLOB_RECURSE addons_list "fib-addon/src/*.c*")
 add_library(${name} SHARED ${src_list} ${addons_list})
 
