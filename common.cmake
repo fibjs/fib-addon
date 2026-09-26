@@ -1,3 +1,8 @@
+# The build environment (BUILD_OS/BUILD_ARCH/BUILD_TYPE, DIST_DIRNAME and
+# BT_BIN_DIR) has to be known before project() runs, so that a configure
+# started by hand behaves exactly like one driven by fib-addon/build.cmake.
+include(${CMAKE_CURRENT_LIST_DIR}/build_tools/cmake/config.cmake)
+
 get_filename_component(name ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 project(${name})
