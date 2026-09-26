@@ -1,11 +1,15 @@
-# The build environment (BUILD_OS/BUILD_ARCH/BUILD_TYPE, DIST_DIRNAME and
-# BT_BIN_DIR) has to be known before project() runs, so that a configure
-# started by hand behaves exactly like one driven by fib-addon/build.cmake.
+# The addon target of an addon repository: the root CMakeLists.txt of the
+# repository includes cmake/config.cmake, calls project() and then this file, so
+# the repository is a single CMake project that the driver of the entry script
+# (fib-addon/scripts/build) configures and builds in one pass.
+#
+# The include below keeps the contract explicit: the build environment
+# (BUILD_OS/BUILD_ARCH/BUILD_TYPE, DIST_DIRNAME and BT_BIN_DIR) has to be known
+# before project() runs, and config.cmake reports a top-level project that
+# called project() first.
 include(${CMAKE_CURRENT_LIST_DIR}/build_tools/cmake/config.cmake)
 
 get_filename_component(name ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-
-project(${name})
 
 include(${CMAKE_CURRENT_LIST_DIR}/build_tools/cmake/option.cmake)
 
@@ -29,3 +33,21 @@ setup_result_library(${name})
 
 set_target_properties(${name} PROPERTIES PREFIX "")
 set_target_properties(${name} PROPERTIES SUFFIX ".node")
+
+# The package entry point loads the addon from <repo>/addon/<name>.node and the
+# release job packs that file, so the artifact is copied next to the sources
+# after every build; the runtime requirements of the artifact are reported the
+# way the historical build driver did.
+add_custom_command(TARGET ${name} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_SOURCE_DIR}/addon"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:${name}>" "${PROJECT_SOURCE_DIR}/addon/")
+
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
+    add_custom_command(TARGET ${name} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -DNODE_FILE=$<TARGET_FILE:${name}>
+            -P "${CMAKE_CURRENT_LIST_DIR}/cmake/glibc_report.cmake")
+elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+    add_custom_command(TARGET ${name} POST_BUILD
+        COMMAND otool -L "$<TARGET_FILE:${name}>")
+endif()

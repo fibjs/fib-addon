@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Entry script of the addon platform: the addon repositories source it from
+# their own `build`, which is started in the repository root:
+#
+#   bash build x64 release -j8
+#
+# build_env.sh checks the dependencies of the repository and dispatches a cross
+# build into the build image, scripts/build of build_tools configures and builds
+# the single CMake project of the repository in one pass.
+
+# The addons link the import libraries of node on Windows (fib-addon/lib), and
+# those are the MSVC ones, so the Windows builds use MSVC rather than the
+# clang-cl default of the driver.
+export BUILD_WITH_MSVC=1
+
+# The repository root: the outputs belong to it (out/<dist>, bin/<dist>) and a
+# build image re-enters it.  build_tools is carried by this repository.
+export BUILD_ENTRY="${BUILD_ENTRY:-$(pwd)}"
+export VENDER_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+. "${VENDER_ROOT}/build_tools/scripts/build_env.sh"
+. "${VENDER_ROOT}/build_tools/scripts/build"
